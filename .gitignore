@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rout
+data
+fer_report_3.20.2025
+figures
+nohup.out
+old
+results
