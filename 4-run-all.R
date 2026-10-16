@@ -11,7 +11,7 @@ source("functions/estimate_all.R")
 source("functions/simulate_estimate.R")
 source("functions/simulate_covid.R")
 
-# we have 2340 scenarios and 1000 reps per scenario (these variables are defined in 1-define-parameters.R)
+# define grid of parameter variations (these variables are defined in 1-define-parameters.R)
 variations <- expand.grid(1:nscenarios, 1:nreps, stringsAsFactors = FALSE)
 colnames(variations) <- c("scenario", "rep")
 variations$num <- as.numeric(rownames(variations))
@@ -32,7 +32,8 @@ par_estimate_all <- function(i, variations) {
 ## parallel version
 # make cluster
 # 8.18.2025 - 16 clusters was causing issues, so decrease to 8 cores
-cl <- makeCluster(8, type = "FORK")
+# 3.15.2025 - temporarily increase to 16 cores
+cl <- makeCluster(16, type = "FORK")
 
 # distribute streams to the cluster members
 RNGkind("L'Ecuyer-CMRG")
@@ -44,7 +45,7 @@ simulated_and_estimated <- parLapply(cl, X = 1:nrow(variations),
 stopCluster(cl)
 
 # unpack simulated vs. estimated
-## simulated data
+# simulated data
 simulated <- bind_rows(lapply(X = 1:nrow(variations), FUN = function(x) simulated_and_estimated[[x]]$simulated)) %>%
   dplyr::relocate(scenario, rep)
 save(simulated, file=paste0("results/simulated_data_", today(), ".rda"))

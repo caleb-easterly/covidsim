@@ -6,9 +6,10 @@ library(zoo)
 library(dplyr)
 
 # parameters
-nreps <- 1000
-# 3*4*18*10 + 18*10 = 2340
-nscenarios <- 2340
+nreps <- 500
+# 3.15.2026 - drop SUD and MC start dates - now 16 policy dates instead of 18
+# 3*4*16*10 + 16*10 = 2080
+nscenarios <- 2080
 
 # smaller number of reps and scenarios for testing
 # nreps <- 10
@@ -29,15 +30,15 @@ policy_signs <- matrix(
 )
 
 # matrix with full factorial combinations of parameters
-parameters <- expand.grid(policy_effects, 1:4, 1:18, 1:10)
+parameters <- expand.grid(policy_effects, 1:4, 1:16, 1:10)
 colnames(parameters) <- c("effects", "signs", "policy_start", "covid_parms")
 
 # matrix with full factorial combinations of parameters for null policy effects
-# adds 180 scenarios, combine from combinations of 18 policy start dates
+# adds 160 scenarios, combine from combinations of 16 policy start dates
 # and 10 covid parameter sets
 # only one option for signs and policy start
 # only 16 parameter start dates are used in the paper (2 were for SERs)
-parameters_null <- expand.grid(0, 1, 1:18, 1:10)
+parameters_null <- expand.grid(0, 1, 1:16, 1:10)
 colnames(parameters_null) <- c("effects", "signs", "policy_start", "covid_parms")
 
 # combine 
@@ -139,7 +140,7 @@ policy_scenarios <- list(
   c(2018, 9), # 18 months before
   c(2018, 12),
   c(2019, 3), # one year before
-  c(2019, 5), # SUD start date - not used in paper
+  # c(2019, 5), # SUD start date - not used in paper
   c(2019, 6), # nine months before
   c(2019, 9), # six months before
   c(2019, 12), # three months before
@@ -148,7 +149,7 @@ policy_scenarios <- list(
   c(2020, 12),
   c(2021, 3), # one year after
   c(2021, 6),
-  c(2021, 7), # managed care's start date - not used in paper
+  # c(2021, 7), # managed care's start date - not used in paper
   c(2021, 9),
   c(2021, 12),
   c(2022, 3) # two years after

@@ -2,7 +2,7 @@ library(dplyr)
 library(zoo)
 
 simulate_covid <- function(
-    rho=0.1, wnvar=1,
+    rho=0, wnvar=1,
     alpha0 = 0, alpha1 = 0,
     beta0 = -10, beta1 = 10/3,
     beta2 = 0, beta3 = 0,
@@ -10,8 +10,10 @@ simulate_covid <- function(
     covid_end = c(2020, 5),
     nonlin = FALSE,
     policy_start = c(2021, 7),
-    policy_end = c(2023, 12)
+    sim_start = c(2015, 10),
+    sim_end = c(2023, 12)
 ) {
+  
   ### COVID parameters
   covid_start <- c(2020, 3)
   
@@ -19,15 +21,15 @@ simulate_covid <- function(
   covid_delay_start <- c(2020, 6)
   
   simd <- ts(NA, 
-             start = c(2015, 10),
-             end = c(2023, 12),
+             start = sim_start,
+             end = sim_end,
              frequency = 12)
   sim_length <- length(simd)
   sim_times <- time(simd)
   
   sim_error <- ts(NA, 
-                  start = c(2015, 10),
-                  end = c(2023, 12),
+                  start = sim_start,
+                  end = sim_end,
                   frequency = 12)
   
   # COVID-19 period
@@ -51,7 +53,7 @@ simulate_covid <- function(
   # policy in july 2021
   policy_ind <- 
     sim_times %in% 
-    time(window(simd, start = policy_start, end = policy_end))
+    time(window(simd, start = policy_start, end = sim_end))
   
   ## vector index at which policy starts
   policy_start_ind <- min(which(policy_ind))

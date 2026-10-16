@@ -65,10 +65,10 @@ estimate_lm_sahwash <- function(df) {
     "covid_intercept_b", "covid_slope_b",
     "policy_intercept_b", "policy_slope_b",
     "covid_intercept_se", "covid_slope_se",
-    "policy_intercept_se", "policy_slope_se",
-    "covid_intercept_nwse", "covid_slope_nwse",
-    "policy_intercept_nwse", "policy_slope_nwse"
-  )
+    "policy_intercept_se", "policy_slope_se")
+  #   "covid_intercept_nwse", "covid_slope_nwse",
+  #   "policy_intercept_nwse", "policy_slope_nwse"
+  # )
   est_df <- as.data.frame(t(estimates_vector))
   est_df$method <- "lm_sahwash"
 
