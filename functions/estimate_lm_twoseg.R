@@ -53,7 +53,7 @@ estimate_lm_twoseg <- function(df) {
   model_summary <- summary(mod)
   
   ## newey west standard errors - commented out for now
-  nw_vcov <- sqrt(diag(NeweyWest(mod, prewhite = FALSE, adjust = TRUE, lag = 1)))[3:6]
+  # nw_vcov <- sqrt(diag(NeweyWest(mod, prewhite = FALSE, adjust = TRUE, lag = 1)))[3:6]
 
   # make vector - coefficient estimates (4) followed by SEs (4)
   estimates_vector <- c(model_summary$coefficients[
@@ -65,9 +65,9 @@ estimate_lm_twoseg <- function(df) {
     "covid_intercept_b", "covid_slope_b",
     "policy_intercept_b", "policy_slope_b",
     "covid_intercept_se", "covid_slope_se",
-    "policy_intercept_se", "policy_slope_se",
-    "covid_intercept_nwse", "covid_slope_nwse",
-    "policy_intercept_nwse", "policy_slope_nwse")
+    "policy_intercept_se", "policy_slope_se")
+    # "covid_intercept_nwse", "covid_slope_nwse",
+    # "policy_intercept_nwse", "policy_slope_nwse")
   est_df <- as.data.frame(t(estimates_vector))
   est_df$method <- "lm_twoseg"
 

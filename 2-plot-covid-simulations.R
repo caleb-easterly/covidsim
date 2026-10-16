@@ -51,3 +51,4 @@ for (i in 1:10) {
 }
 ggarrange(ncol = 3, nrow = 4, plotlist = plots)
 ggsave("figures/figure1-covid-scenarios.png", scale = 2, width = 6.5, height = 7, units = "in", dpi = 300)             
+ggsave("figures/figure1-covid-scenarios.pdf", scale = 2, width = 6.5, height = 7, units = "in")

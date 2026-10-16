@@ -17,7 +17,14 @@ source("functions/estimate_rtn.R")
 source("functions/utilities.R")
 source("functions/estimate_all.R")
 
-simulate_estimate <- function(scenario, rep, parameters, covid_scenarios, policy_scenarios) {
+simulate_estimate <- function(scenario, 
+                              rep, 
+                              parameters, 
+                              covid_scenarios, 
+                              policy_scenarios,
+                              sim_start = c(2015, 10),
+                              sim_end = c(2023, 12)) {
+
   ######### SIMULATE ######### 
   parms <- parameters[scenario, ]
   
@@ -48,7 +55,9 @@ simulate_estimate <- function(scenario, rep, parameters, covid_scenarios, policy
     covid_end = covid_end,
     nonlin = nonlin,
     policy_start = policy_start_date,
-    rho = 0.1, wnvar = 1)
+    rho = 0, wnvar = 1,
+    sim_start = sim_start,
+    sim_end = sim_end)
   simulated_data_treated <- simulated_data_treated %>%
     mutate(scenario = scenario,
            rep = rep,
@@ -73,7 +82,9 @@ simulate_estimate <- function(scenario, rep, parameters, covid_scenarios, policy
     covid_end = covid_end,
     nonlin = nonlin,
     policy_start = policy_start_date,
-    rho = 0.1, wnvar = 1)
+    rho = 0, wnvar = 1,
+    sim_start = sim_start,
+    sim_end = sim_end)
   simulated_data_control <- simulated_data_control %>%
     mutate(scenario = scenario,
            rep = rep,
@@ -95,7 +106,9 @@ simulate_estimate <- function(scenario, rep, parameters, covid_scenarios, policy
   burn <- rnorm(300)
   
   ######### ESTIMATE ######### 
-  estimated <- estimate_all(simulated_data) %>%
+  estimated <- estimate_all(simulated_data,
+                            sim_start = sim_start,
+                            sim_end = sim_end) %>%
     mutate(scenario = scenario,
            rep = rep,
            policy_start_date = policy_begin_ym,

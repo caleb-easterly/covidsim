@@ -12,13 +12,16 @@
 source("functions/utilities.R")
 
 estimate_lm <- function(df,
-                        covid_end_est = c(2020, 6)) {
+                        covid_end_est = c(2020, 6),
+                        sim_start = c(2015, 10),
+                        sim_end = c(2023, 12)) {
+  
   covid_start <- c(2020, 3)
   
   # get estimated/assumed COVID-19 period into the data
   simd <- ts(NA, 
-             start = c(2015, 10),
-             end = c(2023, 12),
+             start = sim_start,
+             end = sim_end,
              frequency = 12)
   sim_length <- length(simd)
   sim_times <- time(simd)
@@ -43,21 +46,21 @@ estimate_lm <- function(df,
   model_summary <- summary(mod)
   
   ## newey west standard errors - commented out for now
-  nw_vcov <- sqrt(diag(NeweyWest(mod, prewhite = FALSE, adjust = TRUE, lag = 1)))[3:6]
+  # nw_vcov <- sqrt(diag(NeweyWest(mod, prewhite = FALSE, adjust = TRUE, lag = 1)))[3:6]
   
   # make vector - coefficient estimates (4) followed by SEs (4)
   estimates_vector <- c(model_summary$coefficients[
     c("covid_ind_estTRUE", "covid_time_est", "policy_indTRUE", "policy_time"),
-    c("Estimate", "Std. Error")],
-    nw_vcov)
+    c("Estimate", "Std. Error")])
+    # nw_vcov)
   
   names(estimates_vector) <- c(
     "covid_intercept_b", "covid_slope_b",
     "policy_intercept_b", "policy_slope_b",
     "covid_intercept_se", "covid_slope_se",
-    "policy_intercept_se", "policy_slope_se",
-    "covid_intercept_nwse", "covid_slope_nwse",
-    "policy_intercept_nwse", "policy_slope_nwse")
+    "policy_intercept_se", "policy_slope_se")
+    # "covid_intercept_nwse", "covid_slope_nwse",
+    # "policy_intercept_nwse", "policy_slope_nwse")
   est_df <- as.data.frame(t(estimates_vector))
   est_df$method <- "lm_assume"
   

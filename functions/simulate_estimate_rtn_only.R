@@ -20,7 +20,16 @@ source("functions/estimate_rtn.R")
 source("functions/utilities.R")
 source("functions/estimate_all.R")
 
-simulate_estimate_rtn_only <- function(scenario, rep, parameters, covid_scenarios, policy_scenarios, fig) {
+simulate_estimate_rtn_only <- function(scenario,
+                                       rep,
+                                       parameters,
+                                       covid_scenarios,
+                                       policy_scenarios,
+                                       fig,
+                                       rtn_method = c("pred", "sb")) {
+  ######### ARGUMENTS ######### 
+  rtn_method <- match.arg(rtn_method)
+  
   ######### SIMULATE ######### 
   parms <- parameters[scenario, ]
   
@@ -70,20 +79,24 @@ simulate_estimate_rtn_only <- function(scenario, rep, parameters, covid_scenario
   burn <- rnorm(300)
   
   ######### ESTIMATE ######### 
-  rtn_output <- estimate_rtn(simulated_data_control, fig=fig, figpath=paste0("figures/", "rtn_scenario", scenario, ".png"))
-  estimated <- rtn_output %>%
-    mutate(scenario = scenario,
-           rep = rep,
-           policy_start_date = policy_begin_ym,
-           policy_intercept = policy_intercept,
-           policy_slope = policy_slope,
-           beta0 = beta0,
-           beta1 = beta1,
-           beta2 = beta2,
-           beta3 = beta3,
-           covid_end_true = covid_end_df)
+  rtn_output <- estimate_rtn(
+    simulated_data_control,
+    fig = fig,
+    figpath = paste0("figures/", "rtn_scenario", scenario, ".png"),
+    est_method = rtn_method 
+  )
+  rtn_output <- c(
+    rtn_output,
+    "scenario" = scenario,
+    "rep" = rep,
+    "covid_end_year" = covid_end[1],
+    "covid_end_month" = covid_end[2]
+  )
+  # add yearmon form 
+  rtn_output$true_covid_end_yearmon <- as.yearmon("2015-10-01")
+  rtn_output$true_covid_end_yearmon <- convert_yearmon(covid_end[1], covid_end[2])
 
   ######### RESULTS ######### 
   # return data
-  return(list("simulated" = simulated_data_control, "estimated" = estimated))
+  return(list("simulated" = simulated_data_control, "rtn_output" = rtn_output))
 }
